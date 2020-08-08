@@ -1,5 +1,6 @@
 import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+import os
 import read_html
 import carteiro
 
@@ -56,11 +57,8 @@ def formatar_codigo(codigo):
 
 if __name__ == "__main__":
 
-    token_bot_path = "/home/juan/Documents/Telegram/token"
-    token_bot = str(open(token_bot_path, "r").readline()).replace("\n", "")
-
-    updater = Updater(token=token_bot, use_context=True)
-    bot = telegram.Bot(token=token_bot)
+    updater = Updater(token=os.environ['BOT_TOKEN'], use_context=True)
+    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     dispatcher = updater.dispatcher    
 
     updater.start_polling()

@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import telegram
 import read_html
@@ -42,9 +43,7 @@ def status_mudou(id, pacote, status_novo):
 
 
 def avisar_usuario(id, pacote, status_encomenda):
-    token_bot_path = Path("/home/juan/Documents/Telegram/token")
-    token_bot = str(open(token_bot_path, "r").readline()).replace("\n", "")
-    bot = telegram.Bot(token=token_bot)
+    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     id = int(id)
     msg = "atualização da encomenda {0}".format(pacote)
     bot.send_message(chat_id=id, text=msg)
