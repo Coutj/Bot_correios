@@ -1,3 +1,4 @@
+import threading
 import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import os
@@ -15,21 +16,22 @@ def receber_pacotes(update, context):
     codigo = formatar_codigo(update.message.text)
     try:
         validar_codigo(codigo)
-        mensagem = checar_status(update.message.text, update.effective_chat.id)
-        context.bot.send_message(chat_id=update.effective_chat.id, text=mensagem)
-        context.bot.send_message(chat_id=update.effective_chat.id, text='Verificaremos o seu pacote a cada 1h, nao seja afobado.')
+        event = threading.Event()
+        event.set()
+        threading.Thread(target=thread_busca_status, args=(event, update.effective_chat.id, codigo,), daemon=True).start()
     except ValueError as e:
-        context.bot.send_message(chat_id=update.effective_chat.id, text=e.args)
+        context.bot.send_message(chat_id=update.effective_chat.id, text=e.args[0])
 
-def checar_status(pacote, id):
+def checar_status(id, pacote):
     joao_carteiro = carteiro.Carteiro(id, pacote)
     try:
         status_encomenda = read_html.procurar_encomendas(pacote)
         joao_carteiro.guardar_status_encomenda(status_encomenda)
-        return status_encomenda
+        bot.send_message(chat_id=int(id), text=status_encomenda)
+        bot.send_message(chat_id=int(id), text='Verificaremos o seu pacote a cada 1h, nao seja afobado.')
     except:
-        return "Não foi possível acessar o site dos correios"
-
+        bot.send_message(chat_id=int(id), text='Não foi possível acessar o site dos correios.')
+ 
 def remover_pacote(update, context):
     try:
         pacote = formatar_codigo(context.args[0])
@@ -54,6 +56,10 @@ def formatar_codigo(codigo):
     codigo = codigo.upper()
     return codigo
 
+def thread_busca_status(event, id, pacote):
+    if event.is_set() == True:
+        checar_status(id, pacote)
+    event.clear()
 
 if __name__ == "__main__":
 
