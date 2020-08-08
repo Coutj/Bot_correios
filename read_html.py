@@ -23,7 +23,7 @@ start_url = "https://www2.correios.com.br/sistemas/rastreamento/default.cfm"
 
 def procurar_encomendas(encomenda):
     try:
-        caminho_chrome = os.environ["GOOGLE_CHROME_BIN"]
+        caminho_chrome = os.environ["CHROMEDRIVER_PATH"]
         driver = webdriver.Chrome(options=chrome_options, executable_path=caminho_chrome)
     except:
          driver = webdriver.Chrome(options=chrome_options)
