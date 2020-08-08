@@ -2,6 +2,7 @@ import sys
 from selenium import webdriver 
 from selenium.webdriver.chrome.options import Options
 import re
+import os
 
 chrome_options = Options()
 chrome_options.add_argument("--disable-extensions")
@@ -11,15 +12,22 @@ chrome_options.add_argument("--no-sandbox") # linux only
 # chrome_options.headless = True # also works
 #driver = webdriver.Chrome(options=chrome_options)
 
-
+try:
+    chrome_options.binary_location = os.environ["GOOGLE_CHROME_BIN"]
+except:
+    pass
 
 #driver = webdriver.Chrome()
 start_url = "https://www2.correios.com.br/sistemas/rastreamento/default.cfm"
 
 
 def procurar_encomendas(encomenda):
-    driver = webdriver.Chrome(options=chrome_options)
-    #driver.Chrome(options=chrome_options)
+    try:
+        caminho_chrome = os.environ["GOOGLE_CHROME_BIN"]
+        driver = webdriver.Chrome(options=chrome_options, executable_path=caminho_chrome)
+    except:
+         driver = webdriver.Chrome(options=chrome_options)
+         
     driver.get(start_url)
     try:
         textbox = driver.find_element_by_xpath('//*[@id="objetos"]')
