@@ -4,6 +4,21 @@ import telegram
 import read_html
 from carteiro import Carteiro
 
+def limpar_base_de_dados():
+    status_possiveis = open("./status_possiveis", "r").readlines()
+    status_possiveis = [item.replace("\n", "") for item in status_possiveis]
+    lista_usuarios = listar_usuarios()
+
+    for usuario in lista_usuarios:
+        for pacote in usuario.get('pacotes'):
+            jorge_carteiro = Carteiro(usuario.get('id'), pacote)
+            status_base = jorge_carteiro.ler_carta()
+            for item in status_possiveis:
+                if item in status_base:
+                    mensagem = "O pacote {0} foi removido da nossa base de dados pois: '{1}'".format(pacote, item)
+                    jorge_carteiro.roubar_pacote()
+                    bot.send_message(chat_id=int(usuario.get('id')), text=mensagem)
+                    
 def listar_usuarios():
     lista_usuarios = list()
     for usuario in endereco_usuarios.iterdir():
@@ -40,7 +55,6 @@ def status_mudou(id, pacote, status_novo):
         return True
 
 def avisar_usuario(id, pacote, status_encomenda):
-    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     id = int(id)
     msg = "atualização da encomenda {0}".format(pacote)
     bot.send_message(chat_id=id, text=msg)
@@ -48,5 +62,8 @@ def avisar_usuario(id, pacote, status_encomenda):
 
 if __name__ == "__main__":
     endereco_usuarios = Path("./pacotes/")
+    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     atualizar_encomendas()
+    limpar_base_de_dados()
+    
     
