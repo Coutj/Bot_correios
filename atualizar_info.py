@@ -28,19 +28,16 @@ def atualizar_encomendas():
                     tiao_carteiro = Carteiro(usuario.get('id'), pacote)
                     tiao_carteiro.escrever_carta(status_novo)
                     avisar_usuario(usuario.get('id'), pacote, status_novo)
-            except Exception as e:
-                print(e)
+            except:
+                pass
 
 def status_mudou(id, pacote, status_novo):
     tiao_carteiro = Carteiro(id, pacote)
     status_antigo = tiao_carteiro.ler_carta()
-    print(status_antigo)
-    print(status_novo)
     if status_antigo == status_novo:
         return False
     else:
         return True
-
 
 def avisar_usuario(id, pacote, status_encomenda):
     bot = telegram.Bot(token=os.environ['BOT_TOKEN'])

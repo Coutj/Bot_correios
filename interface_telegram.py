@@ -6,8 +6,6 @@ import read_html
 import carteiro
 
 
-
-
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Digite o código de rastreamento do pacote")
     context.bot.send_message(chat_id=update.effective_chat.id, text="Você também pode remover um pacote digitando '/remover <pacote>'")
