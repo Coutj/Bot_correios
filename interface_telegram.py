@@ -22,18 +22,18 @@ def receber_pacotes(update, context):
 
 def checar_status(id, pacote):
     joao_carteiro = carteiro.Carteiro(id, pacote)
-    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
+    #bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     try:
         status_encomenda = read_html.procurar_encomendas(pacote)
         joao_carteiro.guardar_status_encomenda(status_encomenda)
-        bot.send_message(chat_id=int(id), text=status_encomenda)
-        bot.send_message(chat_id=int(id), text='Verificaremos o seu pacote a cada 1h, nao seja afobado.')
+        updater.bot.send_message(chat_id=int(id), text=status_encomenda)
+        updater.bot.send_message(chat_id=int(id), text='Verificaremos o seu pacote a cada 1h, nao seja afobado.')
     except:
-        bot.send_message(chat_id=int(id), text='Não foi possível acessar o site dos correios.')
+        updater.bot.send_message(chat_id=int(id), text='Não foi possível acessar o site dos correios.')
  
 def remover_pacote(update, context):
     
-    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
+    #bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     try:
         pacote = formatar_codigo(context.args[0])
         validar_codigo(pacote)
@@ -42,9 +42,9 @@ def remover_pacote(update, context):
             raise ValueError('codigo nao existente na base de dados')
         else:
             carteiro_lalau.roubar_pacote()
-            bot.send_message(update.effective_chat.id, text="O código {0} foi removido".format(pacote))
+            updater.bot.send_message(update.effective_chat.id, text="O código {0} foi removido".format(pacote))
     except ValueError as e:
-        bot.send_message(update.effective_chat.id, text=e.args)
+        updater.bot.send_message(update.effective_chat.id, text=e.args)
 
 def validar_codigo(codigo):
     if len(codigo) != 13:
