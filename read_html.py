@@ -8,6 +8,7 @@ import os
 
 try:
     chrome_options.binary_location = os.environ["GOOGLE_CHROME_BIN"]
+    chrome_options.add_argument("--headless")
 except:
     pass
 finally:
@@ -15,7 +16,7 @@ finally:
     chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox") # linux only
-    chrome_options.add_argument("--headless")
+    #chrome_options.add_argument("--headless")
     # chrome_options.headless = True # also works
     start_url = "https://www2.correios.com.br/sistemas/rastreamento/default.cfm"
 
