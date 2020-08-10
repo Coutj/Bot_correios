@@ -59,6 +59,11 @@ def thread_busca_status(event, id, pacote):
         checar_status(id, pacote)
     event.clear()
 
+def avisar_usuario(id, mensagem):
+    id = int(id)
+    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
+    bot.send_message(chat_id=id, text=mensagem)
+
 if __name__ == "__main__":
 
     updater = Updater(token=os.environ['BOT_TOKEN'], use_context=True)

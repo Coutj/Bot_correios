@@ -17,7 +17,6 @@ finally:
     chrome_options.add_argument("--no-sandbox") # linux only
     chrome_options.add_argument("--headless")
     # chrome_options.headless = True # also works
-    #driver = webdriver.Chrome(options=chrome_options)
     start_url = "https://www2.correios.com.br/sistemas/rastreamento/default.cfm"
 
 def procurar_encomendas(encomenda):
