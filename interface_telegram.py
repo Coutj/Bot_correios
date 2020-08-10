@@ -61,6 +61,7 @@ def thread_busca_status(event, id, pacote):
 
 def avisar_usuario(id, mensagem):
     id = int(id)
+    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     bot.send_message(chat_id=id, text=mensagem)
 
 if __name__ == "__main__":
