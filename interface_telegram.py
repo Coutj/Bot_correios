@@ -22,18 +22,15 @@ def receber_pacotes(update, context):
 
 def checar_status(id, pacote):
     joao_carteiro = carteiro.Carteiro(id, pacote)
-    #bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     try:
         status_encomenda = read_html.procurar_encomendas(pacote)
         joao_carteiro.guardar_status_encomenda(status_encomenda)
-        updater.bot.send_message(chat_id=int(id), text=status_encomenda)
-        updater.bot.send_message(chat_id=int(id), text='Verificaremos o seu pacote a cada 1h, nao seja afobado.')
+        bot.send_message(chat_id=int(id), text=status_encomenda)
+        bot.send_message(chat_id=int(id), text='Verificaremos o seu pacote a cada 1h, nao seja afobado.')
     except:
-        updater.bot.send_message(chat_id=int(id), text='Não foi possível acessar o site dos correios.')
+        bot.send_message(chat_id=int(id), text='Não foi possível acessar o site dos correios.')
  
 def remover_pacote(update, context):
-    
-    #bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     try:
         pacote = formatar_codigo(context.args[0])
         validar_codigo(pacote)
@@ -42,9 +39,9 @@ def remover_pacote(update, context):
             raise ValueError('codigo nao existente na base de dados')
         else:
             carteiro_lalau.roubar_pacote()
-            updater.bot.send_message(update.effective_chat.id, text="O código {0} foi removido".format(pacote))
+            bot.send_message(update.effective_chat.id, text="O código {0} foi removido".format(pacote))
     except ValueError as e:
-        updater.bot.send_message(update.effective_chat.id, text=e.args)
+        bot.send_message(update.effective_chat.id, text=e.args)
 
 def validar_codigo(codigo):
     if len(codigo) != 13:
@@ -64,11 +61,10 @@ def thread_busca_status(event, id, pacote):
 
 def avisar_usuario(id, mensagem):
     id = int(id)
-    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     bot.send_message(chat_id=id, text=mensagem)
 
 if __name__ == "__main__":
-
+    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     updater = Updater(token=os.environ['BOT_TOKEN'], use_context=True)
     dispatcher = updater.dispatcher    
 
@@ -81,3 +77,5 @@ if __name__ == "__main__":
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(receber_mensagem_handler)
     dispatcher.add_handler(remover_pacote_handler)
+
+    print(__name__)
