@@ -55,8 +55,6 @@ def status_mudou(id, pacote, status_novo):
     else:
         return True
 
-
-
 if __name__ == "__main__":
     endereco_usuarios = Path("./pacotes/")
     atualizar_encomendas()

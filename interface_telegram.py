@@ -22,6 +22,7 @@ def receber_pacotes(update, context):
 
 def checar_status(id, pacote):
     joao_carteiro = carteiro.Carteiro(id, pacote)
+    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     try:
         status_encomenda = read_html.procurar_encomendas(pacote)
         joao_carteiro.guardar_status_encomenda(status_encomenda)
@@ -31,6 +32,8 @@ def checar_status(id, pacote):
         bot.send_message(chat_id=int(id), text='Não foi possível acessar o site dos correios.')
  
 def remover_pacote(update, context):
+    
+    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     try:
         pacote = formatar_codigo(context.args[0])
         validar_codigo(pacote)
@@ -67,7 +70,6 @@ def avisar_usuario(id, mensagem):
 if __name__ == "__main__":
 
     updater = Updater(token=os.environ['BOT_TOKEN'], use_context=True)
-    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     dispatcher = updater.dispatcher    
 
     updater.start_polling()
