@@ -1,1 +1,1 @@
-python: interface_telegram.py
+interface_telegram: python interface_telegram.py
