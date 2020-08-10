@@ -41,7 +41,7 @@ def atualizar_encomendas():
                 teve_mudanca = status_mudou(usuario.get('id'), pacote, status_novo)
                 if teve_mudanca == True:
                     tiao_carteiro = Carteiro(usuario.get('id'), pacote)
-                    tiao_carteiro.escrever_carta(status_novo)
+                    tiao_carteiro.guardar_status_encomenda(status_novo)
                     msg = "Atualização da encomenda: {0}".format(pacote) + '\n\n' + status_novo
                     interface_telegram.avisar_usuario(usuario.get('id'), msg)
             except:
