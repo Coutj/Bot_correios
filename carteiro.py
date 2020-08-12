@@ -1,37 +1,37 @@
 import os
-from pathlib import Path
+import redis
 
 class Carteiro():
 
     def __init__(self, id, pacote):
-        self.endereco_usuario = str(id)
-        self.pacote = str(pacote)
-        self.endereco_dos_correios = Path(Path(__file__).parent / "pacotes")
-        self.caixa_de_correio = self.endereco_dos_correios / self.endereco_usuario
-        self.endereco_carta = self.caixa_de_correio / self.pacote
+        self.user_id = str(id)
+        self.pacote = bytes(str(pacote), 'ascii')
+        self.redis_bd = redis.Redis()
+        self.user_dict = self.redis_bd.hgetall(self.user_id)
 
     def guardar_status_encomenda(self, status):
     
-        if not self.caixa_de_correio.exists():
-            self.caixa_de_correio.mkdir()
-
-        self.escrever_carta(status)
+        if self.redis_bd.exists(self.user_id):
+            self.user_dict[self.pacote] = status
+            self.redis_bd.hmset(self.user_id, self.user_dict)
+        else:
+            novo_user_dict = {self.pacote: status}
+            self.redis_bd.hmset(self.user_id, novo_user_dict)
     
-    def escrever_carta(self, mensagem):
-        carta = open(self.endereco_carta.absolute(), "w")
-        carta.write(mensagem)
-        carta.close()
-
     def ler_carta(self):
-        carta = open(self.endereco_carta.absolute(), "r")
-        conteudo_carta = ""
-        for line in carta.readlines():
-            conteudo_carta += line
-        carta.close()
-        return conteudo_carta
+        carta = self.user_dict.get(self.pacote)
+        carta = carta.decode(encoding='UTF-8')
+        return carta
 
     def roubar_pacote(self):
-        self.endereco_carta.unlink()
+        if self.pacote in self.user_dict:
+            if len(self.user_dict) == 1:
+                self.redis_bd.delete(self.user_id)
+            else:
+                del self.user_dict[self.pacote]
+                self.redis_bd.hmset(self.user_id, self.user_dict)
+        else:
+            raise ValueError('codigo nao existente na base de dados')
 
     def checar_existencia_pacote(self):
-        return self.endereco_carta.exists()
+        return self.user_dict.get(self.pacote)

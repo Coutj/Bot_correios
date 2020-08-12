@@ -1,13 +1,12 @@
 import os
-from pathlib import Path
 import interface_telegram
 import read_html
 from carteiro import Carteiro
+import redis
 
 def limpar_base_de_dados():
-    status_possiveis = open("./status_possiveis", "r").readlines()
-    status_possiveis = [item.replace("\n", "") for item in status_possiveis]
     lista_usuarios = listar_usuarios()
+    status_possiveis = open('status_possiveis', 'r').readlines()
 
     for usuario in lista_usuarios:
         for pacote in usuario.get('pacotes'):
@@ -20,15 +19,13 @@ def limpar_base_de_dados():
                     interface_telegram.avisar_usuario(usuario.get('id'), mensagem)
                     
 def listar_usuarios():
-    lista_usuarios = list()
-    for usuario in endereco_usuarios.iterdir():
-        lista_pacotes = tuple()
-        for pacote in usuario.iterdir():
-            lista_pacotes += (pacote.name,)
-    
-        lista_usuarios.append({'id': usuario.name, 'pacotes': lista_pacotes})
+    lista_usuarios = [item.decode(encoding="UTF8") for item in redis_bd.keys()]
+    lista_usuarios_pacotes = list()
+    for usuario in lista_usuarios:
+        pacotes = {item.decode('UTF8') for item in redis_bd.hgetall(usuario)}
+        lista_usuarios_pacotes.append({'id': usuario, 'pacotes': pacotes})
 
-    return lista_usuarios
+    return lista_usuarios_pacotes
 
 def atualizar_encomendas():
 
@@ -56,7 +53,7 @@ def status_mudou(id, pacote, status_novo):
         return True
 
 if __name__ == "__main__":
-    endereco_usuarios = Path("./pacotes/")
+    redis_bd = redis.Redis()
     atualizar_encomendas()
     limpar_base_de_dados()
     

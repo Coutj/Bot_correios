@@ -35,13 +35,13 @@ def remover_pacote(update, context):
         pacote = formatar_codigo(context.args[0])
         validar_codigo(pacote)
         carteiro_lalau = carteiro.Carteiro(update.effective_chat.id, pacote)
-        if carteiro_lalau.checar_existencia_pacote() == False:
+        if carteiro_lalau.checar_existencia_pacote() == None:
             raise ValueError('codigo nao existente na base de dados')
         else:
             carteiro_lalau.roubar_pacote()
             bot.send_message(update.effective_chat.id, text="O código {0} foi removido".format(pacote))
     except ValueError as e:
-        bot.send_message(update.effective_chat.id, text=e.args)
+        bot.send_message(update.effective_chat.id, text=e.args[0])
 
 def validar_codigo(codigo):
     if len(codigo) != 13:
@@ -78,5 +78,3 @@ if __name__ == "__main__":
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(receber_mensagem_handler)
     dispatcher.add_handler(remover_pacote_handler)
-
-    print(__name__)
