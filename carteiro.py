@@ -3,14 +3,19 @@ import redis
 
 class Carteiro():
 
+    if os.environ.get("REDIS_URL") != None:
+        redis_pool = redis.ConnectionPool.from_url(os.environ.get("REDIS_URL"))
+    else:
+        redis_pool = ''
+        
     def __init__(self, id, pacote):
-        self.user_id = str(id)
-        self.pacote = bytes(str(pacote), 'ascii')
         if os.environ.get("REDIS_URL") != None:
-            self.redis_bd = redis.from_url(os.environ.get("REDIS_URL"))
+            self.redis_bd = redis.Redis(connection_pool=Carteiro.redis_pool)
         else:
             self.redis_bd = redis.Redis()
-            
+
+        self.user_id = str(id)
+        self.pacote = bytes(str(pacote), 'ascii')
         self.user_dict = self.redis_bd.hgetall(self.user_id)
 
     def guardar_status_encomenda(self, status):

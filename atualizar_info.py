@@ -17,6 +17,7 @@ def limpar_base_de_dados():
                     mensagem = "O pacote {0} foi removido da nossa base de dados pois: '{1}'".format(pacote, item)
                     jorge_carteiro.roubar_pacote()
                     interface_telegram.avisar_usuario(usuario.get('id'), mensagem)
+                    break
                     
 def listar_usuarios():
     lista_usuarios = [item.decode(encoding="UTF8") for item in redis_bd.keys()]
@@ -55,11 +56,12 @@ def status_mudou(id, pacote, status_novo):
 if __name__ == "__main__":
     c = os.environ.get("REDIS_URL")
     if os.environ.get("REDIS_URL") != None:
-        redis_bd = redis.from_url(os.environ.get("REDIS_URL"))
+        redis_bd = redis.Redis(connection_pool=Carteiro.redis_pool)
     else:
         redis_bd = redis.Redis()
-
-    atualizar_encomendas()
+    
     limpar_base_de_dados()
+    atualizar_encomendas()
+    
     
     

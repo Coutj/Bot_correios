@@ -4,30 +4,28 @@ from selenium.webdriver.chrome.options import Options
 import re
 import os
 
+chrome_options = Options()
 
-
-try:
+if os.environ.get('GOOGLE_CHROME_BIN') != None:
     chrome_options.binary_location = os.environ["GOOGLE_CHROME_BIN"]
     chrome_options.add_argument("--headless")
-except:
+else: 
     pass
-finally:
-    chrome_options = Options()
-    chrome_options.add_argument("--disable-extensions")
-    chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument("--no-sandbox") # linux only
     #chrome_options.add_argument("--headless")
-    # chrome_options.headless = True # also works
-    start_url = "https://www2.correios.com.br/sistemas/rastreamento/default.cfm"
+
+chrome_options.add_argument("--no-sandbox") 
+chrome_options.add_argument("--disable-extensions")
+chrome_options.add_argument("--disable-gpu")
+start_url = "https://www2.correios.com.br/sistemas/rastreamento/default.cfm"
 
 def procurar_encomendas(encomenda):
-    try:
-        caminho_chrome = os.environ["CHROMEDRIVER_PATH"]
+    if os.environ.get('CHROMEDRIVER_PATH') != None:
+        caminho_chrome = os.environ.get('CHROMEDRIVER_PATH')
         driver = webdriver.Chrome(options=chrome_options, executable_path=caminho_chrome)
-    except:
+    else:
          driver = webdriver.Chrome(options=chrome_options)
-    finally:
-         driver.get(start_url)
+    
+    driver.get(start_url)
    
     try:
         textbox = driver.find_element_by_xpath('//*[@id="objetos"]')
