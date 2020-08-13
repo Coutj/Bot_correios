@@ -29,6 +29,7 @@ def checar_status(id, pacote):
         bot.send_message(chat_id=int(id), text='Verificaremos o seu pacote a cada 1h, nao seja afobado.')
     except:
         bot.send_message(chat_id=int(id), text='Não foi possível acessar o site dos correios.')
+        bot.send_message(chat_id=int(id), text='Tentaremos novamente em breve.')
  
 def remover_pacote(update, context):
     try:
