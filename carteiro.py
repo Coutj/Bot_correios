@@ -6,7 +6,11 @@ class Carteiro():
     def __init__(self, id, pacote):
         self.user_id = str(id)
         self.pacote = bytes(str(pacote), 'ascii')
-        self.redis_bd = redis.Redis()
+        if os.environ.get("REDIS_URL") != None:
+            self.redis_bd = redis.from_url(os.environ.get("REDIS_URL"))
+        else:
+            self.redis_bd = redis.Redis()
+            
         self.user_dict = self.redis_bd.hgetall(self.user_id)
 
     def guardar_status_encomenda(self, status):

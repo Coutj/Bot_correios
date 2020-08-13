@@ -53,7 +53,12 @@ def status_mudou(id, pacote, status_novo):
         return True
 
 if __name__ == "__main__":
-    redis_bd = redis.Redis()
+    c = os.environ.get("REDIS_URL")
+    if os.environ.get("REDIS_URL") != None:
+        redis_bd = redis.from_url(os.environ.get("REDIS_URL"))
+    else:
+        redis_bd = redis.Redis()
+
     atualizar_encomendas()
     limpar_base_de_dados()
     
