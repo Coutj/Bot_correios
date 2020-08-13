@@ -14,7 +14,7 @@ def limpar_base_de_dados():
             status_base = jorge_carteiro.ler_carta()
             for item in status_possiveis:
                 if item in status_base:
-                    mensagem = "O pacote {0} foi removido da nossa base de dados pois: '{1}'".format(pacote, item)
+                    mensagem = "O pacote {0} foi removido da nossa base de dados pois: '{1}'".format(pacote, item.replace("\n", ""))
                     jorge_carteiro.roubar_pacote()
                     interface_telegram.avisar_usuario(usuario.get('id'), mensagem)
                     break
@@ -62,6 +62,8 @@ if __name__ == "__main__":
     
     limpar_base_de_dados()
     atualizar_encomendas()
+    
+    
     
     
     

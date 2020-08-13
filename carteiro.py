@@ -37,8 +37,8 @@ class Carteiro():
             if len(self.user_dict) == 1:
                 self.redis_bd.delete(self.user_id)
             else:
+                self.redis_bd.hdel(self.user_id, self.pacote)
                 del self.user_dict[self.pacote]
-                self.redis_bd.hmset(self.user_id, self.user_dict)
         else:
             raise ValueError('codigo nao existente na base de dados')
 
